@@ -11,8 +11,11 @@ setup(
     license="MIT",
     packages=find_packages(exclude=["test"]),
     install_requires=[
-        "tensorflow-gpu",
-        "Keras"
+        "Keras",
+        "mxnet",
+        "pydash",
+        "spacy",
+        "tensorflow-gpu"
     ],
     test_suite="test"
 )
