@@ -3,10 +3,10 @@ import os
 
 
 NAME = "joint-vector"
-HERE = os.path.abspath(os.path.dirname(__file__))
+ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 setup(
-    name="joint-vector",
+    name=NAME,
     description="",
     license="MIT",
     packages=find_packages(exclude=["test"]),

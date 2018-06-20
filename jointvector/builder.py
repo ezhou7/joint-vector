@@ -14,7 +14,7 @@ class EmbeddingSystemBuilder:
         self.tasks = tasks
 
     def build(self):
-        model_input, output_embedding_layer = self.build_arch()
+        model_input, output_embedding_layer = self.__build_arch()
         task_outputs = [
             Dense(
                 units=task.get_num_labels(),
@@ -30,14 +30,26 @@ class EmbeddingSystemBuilder:
 
         return models
 
-    def build_arch(self):
+    def __build_arch(self):
         num_ngrams_1 = len(self.ngram_1_filters)
         num_ngrams_2 = len(self.ngram_2_filters)
 
         if self.words_window_size < num_ngrams_1:
-            raise Exception("Too many n-gram filters compared to window of context words:" +
+            raise Exception("Too many first level n-gram filters compared to window of context words:\n" +
                             "Window size: {}\n".format(self.words_window_size) +
-                            "N-gram filters: {}\n".format(num_ngrams_1))
+                            "Level 1 n-gram filters: {}\n".format(num_ngrams_1))
+
+        if num_ngrams_1 < num_ngrams_2:
+            raise Exception("Too many second level n-gram filters compared to first level n-gram filters:\n" +
+                            "Level 1 n-gram filters: {}\n".format(num_ngrams_1) +
+                            "Level 2 n-gram filters: {}\n".format(num_ngrams_2))
+
+        if num_ngrams_2 < self.conv_3_filters:
+            raise Exception("Too many third level conv filters compared to second level n-gram filters:\n" +
+                            "Level 2 n-gram filters: {}\n".format(num_ngrams_2) +
+                            "Level 3 conv filters: {}\n".format(self.conv_3_filters))
+
+        # ----------- create layers ----------- #
 
         model_input = Input(shape=(self.words_window_size, self.embedding_dims))
 
@@ -80,7 +92,8 @@ class EmbeddingSystemBuilder:
         massage_layer = Dense(units=self.conv_3_filters, activation="relu")
         output_embedding_layer = Dense(units=self.embedding_dims, activation="relu")
 
-        # connect layers
+        # ----------- connect layers ----------- #
+
         ngram_conv_1_layers = [conv_layer(model_input) for conv_layer, _ in ngram_conv_pool_pair_1_layers]
 
         ngram_pool_1_layers = [
