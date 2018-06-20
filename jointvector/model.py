@@ -1,4 +1,4 @@
-from entityresolution.builder import EmbeddingSystemBuilder
+from jointvector.builder import EmbeddingSystemBuilder
 
 
 class EmbeddingSystem:

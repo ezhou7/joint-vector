@@ -2,11 +2,11 @@ from setuptools import setup, find_packages
 import os
 
 
-NAME = "entity-resolution"
+NAME = "joint-vector"
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 setup(
-    name="entity-resolution",
+    name="joint-vector",
     description="",
     license="MIT",
     packages=find_packages(exclude=["test"]),

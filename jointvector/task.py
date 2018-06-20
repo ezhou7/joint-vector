@@ -14,3 +14,6 @@ class NLPTask:
 
     def get_label(self, index):
         return self.output_labels[index]
+
+    def auxiliary_arch(self):
+        pass

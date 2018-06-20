@@ -1,7 +1,7 @@
 from keras.models import Model
 from keras.layers import Input, Dense, Reshape, concatenate
 
-from entityresolution.layerutils import conv_pool_pair
+from jointvector.layerutils import conv_pool_pair
 
 
 class EmbeddingSystemBuilder:
@@ -26,7 +26,7 @@ class EmbeddingSystemBuilder:
         models = [Model(inputs=model_input, outputs=task_output) for task_output in task_outputs]
 
         for task, model in zip(self.tasks, models):
-            model.compile(optimizer=task.optimizer, loss=task.loss, metrics=task.metrics)
+            model.compile(optimizer=task.optimizer, loss=task.loss_func, metrics=task.metrics)
 
         return models
 
