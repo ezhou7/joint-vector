@@ -1,5 +1,5 @@
 import json
-from abc import ABC, abstractmethod
+from abc import ABC
 from collections import namedtuple
 
 from jointvector.path import get_props_path
@@ -26,10 +26,6 @@ class NLPTask(ABC):
     def get_label(self, index):
         return self.output_labels[index]
 
-    @abstractmethod
-    def auxiliary_arch(self):
-        raise NotImplementedError()
-
 
 class POSTask(NLPTask):
     def __init__(self):
@@ -45,5 +41,32 @@ class POSTask(NLPTask):
             pos_props.metrics
         )
 
-    def auxiliary_arch(self):
-        pass
+
+class DEPTask(NLPTask):
+    def __init__(self):
+        with open(get_props_path("dep-task-props.json"), "r") as fin:
+            dep_props = json.load(fin, object_hook=lambda d: json_to_task("DEPTaskProps")(*d.values()))
+
+        super().__init__(
+            dep_props.task_name,
+            dep_props.output_labels,
+            dep_props.activation,
+            dep_props.optimizer,
+            dep_props.loss_func,
+            dep_props.metrics
+        )
+
+
+class NERTask(NLPTask):
+    def __init__(self):
+        with open(get_props_path("ner-task-props.json"), "r") as fin:
+            ner_props = json.load(fin, object_hook=lambda d: json_to_task("NERTaskProps")(*d.values()))
+
+        super().__init__(
+            ner_props.task_name,
+            ner_props.output_labels,
+            ner_props.activation,
+            ner_props.optimizer,
+            ner_props.loss_func,
+            ner_props.metrics
+        )

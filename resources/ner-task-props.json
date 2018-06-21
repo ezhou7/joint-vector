@@ -1,0 +1,29 @@
+{
+  "task_name": "named-entity-recognition",
+  "output_labels": [
+    "PERSON",
+    "NORP",
+    "FAC",
+    "ORG",
+    "GPE",
+    "LOC",
+    "PRODUCT",
+    "EVENT",
+    "WORK_OF_ART",
+    "LAW",
+    "LANGUAGE",
+    "DATE",
+    "TIME",
+    "PERCENT",
+    "MONEY",
+    "QUANTITY",
+    "ORDINAL",
+    "CARDINAL"
+  ],
+  "activation": "softmax",
+  "optimizer": "rmsprop",
+  "loss_func": "sparse_categorical_crossentropy",
+  "metrics": [
+    "sparse_categorical_accuracy"
+  ]
+}
