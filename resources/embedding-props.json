@@ -1,6 +1,7 @@
 {
-  "words_window_size": 10,
+  "words_window_size": 11,
   "ngram_1_filters": [
+    512,
     512,
     512,
     512,
@@ -13,6 +14,7 @@
     512
   ],
   "ngram_2_filters": [
+    256,
     256,
     256,
     256,

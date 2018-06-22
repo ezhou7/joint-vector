@@ -1,3 +1,4 @@
+import numpy as np
 from typing import List
 
 
@@ -12,6 +13,10 @@ class Token:
     @staticmethod
     def get_root_word_form():
         return "#$%^&"
+
+    @staticmethod
+    def get_root_word_vec(embedding_dim):
+        return np.ones(shape=(embedding_dim,), dtype="float16")
 
     @staticmethod
     def root_token():

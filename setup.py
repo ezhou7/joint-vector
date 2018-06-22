@@ -13,6 +13,7 @@ setup(
     install_requires=[
         "Keras",
         "mxnet",
+        "numpy",
         "pydash",
         "spacy",
         "tensorflow-gpu"

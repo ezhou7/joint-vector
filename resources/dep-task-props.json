@@ -1,5 +1,6 @@
 {
   "task_name": "dependency-parsing",
+  "task_tag": "dep_tag",
   "output_labels": [
     "acl",
     "acomp",

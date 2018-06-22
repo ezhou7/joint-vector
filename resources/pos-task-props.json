@@ -1,5 +1,6 @@
 {
   "task_name": "part-of-speech",
+  "task_tag": "pos_tag",
   "output_labels": [
     "$",
     ":",

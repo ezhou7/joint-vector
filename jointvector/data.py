@@ -1,4 +1,7 @@
-class DataSplitter:
+from jointvector.structure import Token
+
+
+class DataGenerator:
     def __init__(self, data: list):
         self.data = data
 
@@ -16,5 +19,28 @@ class DataSplitter:
 
         return trn, dev, tst
 
-    def construct_task_data(self, task):
-        pass
+    def generate_features(self, word2vec, window_size):
+        full_sentences = [sentence.tokens_with_root for sentence in self.data]
+
+        word_vecs_all = [
+            [
+                word2vec[token.word_form]
+                if not token.is_root()
+                else Token.get_root_word_vec(word2vec.shape[1])
+                for token in full_sentence.tokens
+            ]
+            for full_sentence in full_sentences
+        ]
+
+        half_window = int(window_size / 2)
+
+        features = [[] for _ in range(window_size)]
+        for word_vecs in word_vecs_all:
+            for i, curr_word_vec in enumerate(word_vecs[1:], 1):
+                start = 0 if i <= half_window else i - half_window
+                end = -1 if len(word_vecs) <= i + half_window else i + half_window
+
+                for feature_list, curr_feature in zip(features, word_vecs[start:end]):
+                    feature_list.append(curr_feature)
+
+        return [np.array(feature_list) for feature_list in features]

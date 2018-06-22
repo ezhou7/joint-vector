@@ -1,5 +1,6 @@
 {
   "task_name": "named-entity-recognition",
+  "task_tag": "ner_tag",
   "output_labels": [
     "PERSON",
     "NORP",
