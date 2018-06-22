@@ -1,7 +1,12 @@
 from keras.models import Model
-from keras.layers import Input, Dense, Reshape, concatenate
+from keras.layers import Input, Dense, Conv2D, MaxPool2D, Reshape, concatenate
 
-from jointvector.layerutils import conv_pool_pair
+
+def conv_pool_pair(num_filters, kernel_size, conv_activation, pool_size):
+    conv_layer = Conv2D(filters=num_filters, kernel_size=kernel_size, activation=conv_activation)
+    pool_layer = MaxPool2D(pool_size=pool_size)
+
+    return conv_layer, pool_layer
 
 
 class EmbeddingSystemBuilder:

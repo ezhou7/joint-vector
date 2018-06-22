@@ -1,5 +1,5 @@
 import json
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections import namedtuple
 
 from jointvector.path import get_props_path
@@ -26,6 +26,10 @@ class NLPTask(ABC):
     def get_label(self, index):
         return self.output_labels[index]
 
+    @abstractmethod
+    def generate_data(self, sentences):
+        raise NotImplementedError()
+
 
 class POSTask(NLPTask):
     def __init__(self):
@@ -40,6 +44,9 @@ class POSTask(NLPTask):
             pos_props.loss_func,
             pos_props.metrics
         )
+
+    def generate_data(self, sentences):
+        pass
 
 
 class DEPTask(NLPTask):
@@ -56,6 +63,9 @@ class DEPTask(NLPTask):
             dep_props.metrics
         )
 
+    def generate_data(self, sentences):
+        pass
+
 
 class NERTask(NLPTask):
     def __init__(self):
@@ -70,3 +80,6 @@ class NERTask(NLPTask):
             ner_props.loss_func,
             ner_props.metrics
         )
+
+    def generate_data(self, sentences):
+        pass
