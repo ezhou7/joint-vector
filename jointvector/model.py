@@ -3,22 +3,26 @@ import logging
 import numpy as np
 from jointvector.builder import EmbeddingSystemBuilder
 
+from jointvector.data import generate_features
 from jointvector.path import get_props_path
 from jointvector.timer import stopwatch
 
 
 class EmbeddingSystem:
-    def __init__(self, tasks):
+    def __init__(self, tasks, word2vec):
         self.tasks = tasks
-
-        # TODO: implement auto reading of embedding dimensions
-        self.embedding_dims = 0
+        self.word2vec = word2vec
 
         with open(get_props_path("embedding-props.json"), "r") as fin:
             embedding_sys_props = json.load(fin)
 
+        self.words_window_size = embedding_sys_props["words_window_size"]
+        self.ngram_1_filters = embedding_sys_props["ngram_1_filters"]
+        self.ngram_2_filters = embedding_sys_props["ngram_2_filters"]
+        self.conv_3_filters = embedding_sys_props["conv_3_filters"]
+
         model_builder = EmbeddingSystemBuilder(
-            self.embedding_dims,
+            word2vec.shape[1],
             embedding_sys_props["words_window_size"],
             embedding_sys_props["ngram_1_filters"],
             embedding_sys_props["ngram_2_filters"],
@@ -28,7 +32,7 @@ class EmbeddingSystem:
 
         self.models = model_builder.build()
 
-    def train(self, xtrn, ytrn, xdev, ydev, nb_epochs=5, batch_size=32):
+    def train(self, trn_data, dev_data, nb_epochs=5, batch_size=32):
         best_epoch = 1
         best_trn_scores = [0.0] * len(self.tasks)
         best_dev_scores = [0.0] * len(self.tasks)
@@ -41,6 +45,12 @@ class EmbeddingSystem:
             curr_dev_scores = [0.0] * len(self.tasks)
 
             for i, (task, model) in enumerate(zip(self.tasks, self.models)):
+                xtrn = generate_features(trn_data, self.word2vec, self.words_window_size)
+                ytrn = task.generate_labels(trn_data)
+
+                xdev = generate_features(dev_data, self.word2vec, self.words_window_size)
+                ydev = task.generate_labels(dev_data)
+
                 stopwatch.start("{}_training".format(task.task_name))
                 h = model.fit(x=xtrn, y=ytrn, validation_data=(xdev, ydev), batch_size=batch_size, epochs=1, verbose=0)
                 training_time = stopwatch.end("{}_training".format(task.task_name))
@@ -75,4 +85,9 @@ class EmbeddingSystem:
             logging.info("{}: Trn - {.2f}, Dev - {.2f}".format(task.task_name, best_trn_score, best_dev_score))
 
     def predict(self, X):
-        return {task.task_name: model.predict(X) for task, model in zip(self.tasks, self.models)}
+        return {
+            task.task_name: model.predict(
+                generate_features(X, self.word2vec, self.words_window_size)
+            )
+            for task, model in zip(self.tasks, self.models)
+        }
