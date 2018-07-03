@@ -1,6 +1,14 @@
+import fasttext
+import os
 import numpy as np
 
+from jointvector.path import get_resources_path
 from jointvector.structure import Token
+
+
+def get_word_to_vec(word2vec_filename):
+    path = os.path.join(get_resources_path(), word2vec_filename)
+    return fasttext.load_model(path)
 
 
 def create_data_split(data, trn_ratio=0.7, dev_ratio=0.15):

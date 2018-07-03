@@ -3,20 +3,28 @@ import os
 
 
 NAME = "joint-vector"
-ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 setup(
     name=NAME,
     description="",
     license="MIT",
-    packages=find_packages(exclude=["test"]),
+    packages=find_packages(exclude=["test"]) + ["props"],
+    include_package_data=True,
+    setup_requires=["Cython"],
+    extras_require={
+        "tensorflow-gpu": ["tensorflow-gpu"]
+    },
     install_requires=[
+        "Cython",
+        "fasttext",
         "Keras",
         "mxnet",
+        "nose",
         "numpy",
         "pydash",
+        "pytest",
         "spacy",
-        "tensorflow-gpu"
+        "tensorflow"
     ],
     test_suite="test"
 )

@@ -1,10 +1,10 @@
 import json
 import logging
 import numpy as np
-from jointvector.builder import EmbeddingSystemBuilder
 
+from jointvector.builder import EmbeddingSystemBuilder
 from jointvector.data import generate_features
-from jointvector.path import get_props_path
+from jointvector.path import get_task_props_path
 from jointvector.timer import stopwatch
 
 
@@ -13,7 +13,7 @@ class EmbeddingSystem:
         self.tasks = tasks
         self.word2vec = word2vec
 
-        with open(get_props_path("embedding-props.json"), "r") as fin:
+        with open(get_task_props_path("embedding-props.json"), "r") as fin:
             embedding_sys_props = json.load(fin)
 
         self.words_window_size = embedding_sys_props["words_window_size"]
@@ -33,6 +33,9 @@ class EmbeddingSystem:
         self.models = model_builder.build()
 
     def train(self, trn_data, dev_data, nb_epochs=5, batch_size=32):
+        xtrn = generate_features(trn_data, self.word2vec, self.words_window_size)
+        xdev = generate_features(dev_data, self.word2vec, self.words_window_size)
+
         best_epoch = 1
         best_trn_scores = [0.0] * len(self.tasks)
         best_dev_scores = [0.0] * len(self.tasks)
@@ -45,10 +48,7 @@ class EmbeddingSystem:
             curr_dev_scores = [0.0] * len(self.tasks)
 
             for i, (task, model) in enumerate(zip(self.tasks, self.models)):
-                xtrn = generate_features(trn_data, self.word2vec, self.words_window_size)
                 ytrn = task.generate_labels(trn_data)
-
-                xdev = generate_features(dev_data, self.word2vec, self.words_window_size)
                 ydev = task.generate_labels(dev_data)
 
                 stopwatch.start("{}_training".format(task.task_name))
@@ -85,9 +85,4 @@ class EmbeddingSystem:
             logging.info("{}: Trn - {.2f}, Dev - {.2f}".format(task.task_name, best_trn_score, best_dev_score))
 
     def predict(self, X):
-        return {
-            task.task_name: model.predict(
-                generate_features(X, self.word2vec, self.words_window_size)
-            )
-            for task, model in zip(self.tasks, self.models)
-        }
+        return {task.task_name: model.predict(X) for task, model in zip(self.tasks, self.models)}
