@@ -16,6 +16,7 @@ setup(
     },
     install_requires=[
         "Cython",
+        "fasttextmirror",
         "Keras",
         "mxnet",
         "nose",
