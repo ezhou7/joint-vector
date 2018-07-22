@@ -22,7 +22,7 @@ class EmbeddingSystem:
         self.conv_3_filters = embedding_sys_props["conv_3_filters"]
 
         model_builder = EmbeddingSystemBuilder(
-            word2vec.shape[1],
+            word2vec.get_dimension(),
             embedding_sys_props["words_window_size"],
             embedding_sys_props["ngram_1_filters"],
             embedding_sys_props["ngram_2_filters"],
