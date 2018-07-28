@@ -22,9 +22,17 @@ class NLPTask:
     def get_label(self, index):
         return getattr(self, "output_labels")[index]
 
+    def get_label_index(self, label):
+        return self.label_to_idx[label]
+
     def generate_labels(self, sentences):
+        for sentence in sentences:
+            for token in sentence.tokens:
+                label = getattr(token, getattr(self, "task_tag"))
+                if label == "``":
+                    print(token.word_form)
         return np.array([
-            getattr(token, getattr(self, "task_tag"))
+            self.get_label_index(getattr(token, getattr(self, "task_tag")))
             for sentence in sentences
             for token in sentence.tokens
         ])

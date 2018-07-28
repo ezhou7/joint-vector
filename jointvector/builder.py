@@ -1,3 +1,4 @@
+from keras import backend as K
 from keras.models import Model
 from keras.layers import Input, Dense, Conv2D, MaxPool2D, Reshape, concatenate
 
@@ -49,19 +50,20 @@ class EmbeddingSystemBuilder:
                             "Level 1 n-gram filters: {}\n".format(num_ngrams_1) +
                             "Level 2 n-gram filters: {}\n".format(num_ngrams_2))
 
-        if num_ngrams_2 < self.conv_3_filters:
-            raise Exception("Too many third level conv filters compared to second level n-gram filters:\n" +
-                            "Level 2 n-gram filters: {}\n".format(num_ngrams_2) +
-                            "Level 3 conv filters: {}\n".format(self.conv_3_filters))
+        # if num_ngrams_2 < self.conv_3_filters:
+        #     raise Exception("Too many third level conv filters compared to second level n-gram filters:\n" +
+        #                     "Level 2 n-gram filters: {}\n".format(num_ngrams_2) +
+        #                     "Level 3 conv filters: {}\n".format(self.conv_3_filters))
 
         # ----------- create layers ----------- #
 
         model_input = Input(shape=(self.words_window_size, self.embedding_dims))
+        input_reshape = Reshape(target_shape=(self.words_window_size, self.embedding_dims, 1))
 
         ngram_conv_pool_pair_1_layers = [
             conv_pool_pair(
                 num_filters=num_filters,
-                kernel_size=(nth_gram, self.embedding_dims),
+                kernel_size=(nth_gram, 1),
                 conv_activation="tanh",
                 # size of nth conv layer output: num_words - nth_gram + 1
                 pool_size=(self.words_window_size - nth_gram + 1, self.embedding_dims)
@@ -70,13 +72,14 @@ class EmbeddingSystemBuilder:
         ]
 
         min_filter_1_size = min(self.ngram_1_filters)
+        ngram_output_1_reshape_layer = Reshape(target_shape=(min_filter_1_size,))
         ngram_output_1_layers = [Dense(units=min_filter_1_size, activation="relu") for _ in range(num_ngrams_1)]
-        ngram_output_1_matrix = Reshape(target_shape=(num_ngrams_1, min_filter_1_size))
+        ngram_output_1_matrix = Reshape(target_shape=(num_ngrams_1, min_filter_1_size, 1))
 
         ngram_conv_pool_pair_2_layers = [
             conv_pool_pair(
                 num_filters=num_filters,
-                kernel_size=(nth_gram, min_filter_1_size),
+                kernel_size=(nth_gram, 1),
                 conv_activation="tanh",
                 pool_size=(num_ngrams_1 - nth_gram + 1, min_filter_1_size)
             )
@@ -84,8 +87,9 @@ class EmbeddingSystemBuilder:
         ]
 
         min_filter_2_size = min(self.ngram_2_filters)
+        ngram_output_2_reshape_layer = Reshape(target_shape=(min_filter_2_size,))
         ngram_output_2_layers = [Dense(units=min_filter_2_size, activation="relu") for _ in range(num_ngrams_2)]
-        ngram_output_2_matrix = Reshape(target_shape=(num_ngrams_2, min_filter_2_size))
+        ngram_output_2_matrix = Reshape(target_shape=(num_ngrams_2, min_filter_2_size, 1))
 
         conv_pool_pair_3 = conv_pool_pair(
             num_filters=self.conv_3_filters,
@@ -94,12 +98,15 @@ class EmbeddingSystemBuilder:
             pool_size=(1, min_filter_2_size)
         )
 
+        massage_reshape_layer = Reshape(target_shape=(self.conv_3_filters,))
         massage_layer = Dense(units=self.conv_3_filters, activation="relu")
         output_embedding_layer = Dense(units=self.embedding_dims, activation="relu")
 
         # ----------- connect layers ----------- #
 
-        ngram_conv_1_layers = [conv_layer(model_input) for conv_layer, _ in ngram_conv_pool_pair_1_layers]
+        new_reshaped_input = input_reshape(model_input)
+
+        ngram_conv_1_layers = [conv_layer(new_reshaped_input) for conv_layer, _ in ngram_conv_pool_pair_1_layers]
 
         ngram_pool_1_layers = [
             pool_layer(conv_layer)
@@ -107,7 +114,7 @@ class EmbeddingSystemBuilder:
         ]
 
         ngram_dense_1_layers = [
-            dense_layer(pool_layer)
+            dense_layer(ngram_output_1_reshape_layer(pool_layer))
             for pool_layer, dense_layer in zip(ngram_pool_1_layers, ngram_output_1_layers)
         ]
 
@@ -121,7 +128,7 @@ class EmbeddingSystemBuilder:
         ]
 
         ngram_dense_2_layers = [
-            dense_layer(pool_layer)
+            dense_layer(ngram_output_2_reshape_layer(pool_layer))
             for pool_layer, dense_layer in zip(ngram_pool_2_layers, ngram_output_2_layers)
         ]
 
@@ -130,7 +137,7 @@ class EmbeddingSystemBuilder:
         conv_3_layer, pool_3_layer = conv_pool_pair_3
         conv_3_layer = conv_3_layer(ngram_part_2_output)
         pool_3_layer = pool_3_layer(conv_3_layer)
-        massage_layer = massage_layer(pool_3_layer)
+        massage_layer = massage_layer(massage_reshape_layer(pool_3_layer))
         output_embedding_layer = output_embedding_layer(massage_layer)
 
         return model_input, output_embedding_layer

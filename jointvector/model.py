@@ -40,9 +40,10 @@ class EmbeddingSystem:
         best_trn_scores = [0.0] * len(self.tasks)
         best_dev_scores = [0.0] * len(self.tasks)
 
-        for epoch in range(nb_epochs, 1):
-            logging.info("Epoch {}".format(epoch))
-            stopwatch.start("epoch_training")
+        stopwatch.start("epoch_training")
+
+        for epoch in range(1, nb_epochs):
+            print("Epoch {}".format(epoch))
 
             curr_trn_scores = [0.0] * len(self.tasks)
             curr_dev_scores = [0.0] * len(self.tasks)
@@ -58,7 +59,7 @@ class EmbeddingSystem:
                 curr_trn_scores[i] = h.history["sparse_categorical_accuracy"]
                 curr_dev_scores[i] = h.history["val_sparse_categorical_accuracy"]
 
-                logging.info(
+                print(
                     "{} - trn time: {.2f}, Trn - ls {.2f} ac {.2f}, Dev - ls {.2f} ac {.2f}".format(
                         task.task_name,
                         training_time,
@@ -74,15 +75,15 @@ class EmbeddingSystem:
                 best_trn_scores = curr_trn_scores
                 best_dev_scores = curr_dev_scores
 
-        logging.info(
-            "Summary - total time: {.2f}, Best Scores @ Epoch {1:d}".format(
+        print(
+            "Summary - total time: {0:.2f}, Best Scores @ Epoch {1:d}".format(
                 stopwatch.end("epoch_training"),
                 best_epoch
             )
         )
 
         for task, best_trn_score, best_dev_score in zip(self.tasks, best_trn_scores, best_dev_scores):
-            logging.info("{}: Trn - {.2f}, Dev - {.2f}".format(task.task_name, best_trn_score, best_dev_score))
+            print("{0}: Trn - {1:.2f}, Dev - {2:.2f}".format(task.task_name, best_trn_score, best_dev_score))
 
     def predict(self, X):
         return {task.task_name: model.predict(X) for task, model in zip(self.tasks, self.models)}

@@ -7,6 +7,7 @@ dist/
 joint_vector.egg-info/
 jointvector/*.pyc
 resources/
+data/
 
 
 
