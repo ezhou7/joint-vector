@@ -33,3 +33,25 @@ def test_training():
     ]
 
     joint_model.train(sentences, sentences)
+
+
+def test_multiple_tasks():
+    pos_task = NLPTask("pos-task-props.json")
+    dep_task = NLPTask("dep-task-props.json")
+    ner_task = NLPTask("ner-task-props.json")
+
+    w2v = fastText.load_model(Paths.Resources.get_fasttext_path())
+    joint_model = EmbeddingSystem([pos_task, dep_task, ner_task], w2v)
+
+    transcript_paths = Paths.Transcripts.get_input_transcript_paths()
+    first_season_transcript = transcript_paths[0]
+    episodes = read_season_json(first_season_transcript[0])
+    sentences = [
+        sentence
+        for episode in episodes
+        for scene in episode.scenes
+        for utterance in scene.utterances
+        for sentence in utterance.sentences
+    ]
+
+    joint_model.train(sentences, sentences)
