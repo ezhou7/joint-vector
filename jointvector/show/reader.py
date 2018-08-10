@@ -1,6 +1,6 @@
 import json
 
-from jointvector import idutils
+from jointvector.show import idutils
 from jointvector.structure import Token, Sentence
 from jointvector.show.transcripts import Utterance, Scene, Episode
 
