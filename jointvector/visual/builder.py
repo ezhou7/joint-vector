@@ -16,6 +16,9 @@ def add_convolution_block(input_src, nb_filters, kernel_size, strides, bottlenec
 
 
 class VisualBranchBuilder:
+    """
+    DenseNet architecture
+    """
     def __init__(self, block_sizes, img_dims, growth_rate, compression_rate, use_bottlenecks=True):
         self.block_sizes = block_sizes
         self.img_dims = img_dims
