@@ -1,0 +1,11 @@
+{
+  "block_sizes": [
+    6,
+    12,
+    32,
+    32
+  ],
+  "growth_rate": 24,
+  "compression_rate": 0.5,
+  "use_bottlenecks": true
+}

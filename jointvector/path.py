@@ -3,12 +3,12 @@ import os
 from jointvector import ROOT_DIR
 
 
-def get_props_path():
+def get_props_dir_path():
     return os.path.join(ROOT_DIR, "props/")
 
 
 def get_task_props_path(props_filename):
-    return os.path.join(get_props_path(), props_filename)
+    return os.path.join(get_props_dir_path(), props_filename)
 
 
 class Paths:

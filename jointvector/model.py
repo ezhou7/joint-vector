@@ -23,10 +23,10 @@ class EmbeddingSystem:
 
         model_builder = EmbeddingSystemBuilder(
             word2vec.get_dimension(),
-            embedding_sys_props["words_window_size"],
-            embedding_sys_props["ngram_1_filters"],
-            embedding_sys_props["ngram_2_filters"],
-            embedding_sys_props["conv_3_filters"],
+            self.words_window_size,
+            self.ngram_1_filters,
+            self.ngram_2_filters,
+            self.conv_3_filters,
             tasks
         )
 
