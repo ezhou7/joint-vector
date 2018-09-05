@@ -11,6 +11,11 @@ def get_task_props_path(props_filename):
     return os.path.join(get_props_dir_path(), props_filename)
 
 
+def set_images_dir_path():
+    # TODO: implement this method
+    return os.path.join(ROOT_DIR, "images/")
+
+
 class Paths:
     class Resources:
         _dir = "resources/"

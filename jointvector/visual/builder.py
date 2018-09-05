@@ -19,9 +19,8 @@ class VisualBranchBuilder:
     """
     DenseNet architecture
     """
-    def __init__(self, block_sizes, img_dims, growth_rate, compression_rate, use_bottlenecks=True):
+    def __init__(self, block_sizes, growth_rate, compression_rate, use_bottlenecks=True):
         self.block_sizes = block_sizes
-        self.img_dims = img_dims
         self.growth_rate = growth_rate
         self.compression_rate = compression_rate
         self.use_bottlenecks = use_bottlenecks
@@ -30,7 +29,7 @@ class VisualBranchBuilder:
         nb_channels = 2 * self.growth_rate
 
         # input
-        input_layer = Input(shape=self.img_dims)
+        input_layer = Input(shape=(None, None, 3))
 
         # initial block
         bottleneck_block_output = add_convolution_block(
