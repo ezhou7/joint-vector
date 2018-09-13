@@ -13,8 +13,6 @@ class VisualBranch:
 
         model_builder = VisualBranchBuilder(
             self.block_sizes,
-            # TODO: fill in image dimensions
-            0,
             self.growth_rate,
             self.compression_rate,
             self.use_bottlenecks
