@@ -18,14 +18,16 @@ setup(
         "Cython",
         "fasttextmirror",
         "Keras",
+        "matplotlib",
         "mxnet",
         "nltk",
         "nose",
         "numpy",
+        "opencv-python",
         "pycocotools",
         "pydash",
         "pytest",
-        "spacy",
+        "scikit-image",
         "tensorflow"
     ],
     test_suite="test"

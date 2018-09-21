@@ -1,6 +1,10 @@
 import numpy as np
 
 
+def match_instance_with_photo():
+    pass
+
+
 def search_images(word):
     # TODO: implement this method
     pass
