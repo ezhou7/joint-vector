@@ -4,7 +4,7 @@ import numpy as np
 
 from jointvector.builder import EmbeddingSystemBuilder
 from jointvector.data import generate_features
-from jointvector.path import get_task_props_path
+from jointvector.path import get_task_props_file_path
 from jointvector.timer import stopwatch
 
 
@@ -13,7 +13,7 @@ class EmbeddingSystem:
         self.tasks = tasks
         self.word2vec = word2vec
 
-        with open(get_task_props_path("embedding-props.json"), "r") as fin:
+        with open(get_task_props_file_path("embedding-props.json"), "r") as fin:
             embedding_sys_props = json.load(fin)
 
         self.words_window_size = embedding_sys_props["words_window_size"]

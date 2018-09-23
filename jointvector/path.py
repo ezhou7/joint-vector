@@ -5,75 +5,87 @@ from jointvector import ROOT_DIR
 
 # ---- property/configuration paths ---- #
 
-def get_props_dir_path():
+def get_props_dir_path() -> str:
     return os.path.join(ROOT_DIR, "props/")
 
 
-def get_task_props_file_path(props_filename):
+def get_task_props_file_path(props_filename: str) -> str:
     return os.path.join(get_props_dir_path(), props_filename)
 
 
 # ---- resources path ---- #
 
-def get_resources_dir_path():
+def get_resources_dir_path() -> str:
     return os.path.join(ROOT_DIR, "resources/")
 
 
 # ---- word embedding path ---- #
 
-def get_fasttext_file_path():
+def get_fasttext_file_path() -> str:
     return os.path.join(get_resources_dir_path(), "fasttext-50-wikipedia-nytimes-amazon-friends-updated.bin")
 
 
 # ---- image dataset paths ---- #
 
-def get_image_dataset_dir_path():
+def get_image_dataset_dir_path() -> str:
     return os.path.join(get_resources_dir_path(), "coco-dataset/")
 
 
-def get_images_dir_path():
+def get_images_dir_path() -> str:
     return os.path.join(get_image_dataset_dir_path(), "images/")
 
 
-def get_train_images_dir_path():
+def get_train_images_dir_path() -> str:
     return os.path.join(get_images_dir_path(), "train2017/")
 
 
-def get_val_images_dir_path():
+def get_val_images_dir_path() -> str:
     return os.path.join(get_images_dir_path(), "val2017/")
 
 
-def get_test_images_dir_path():
+def get_test_images_dir_path() -> str:
     return os.path.join(get_images_dir_path(), "test2017/")
+
+
+def get_train_image(image_file_name: str) -> str:
+    return os.path.join(get_train_images_dir_path(), image_file_name)
+
+
+def get_val_image(image_file_name: str) -> str:
+    return os.path.join(get_val_images_dir_path(), image_file_name)
+
+
+def get_test_image(image_file_name: str) -> str:
+    return os.path.join(get_test_images_dir_path(), image_file_name)
 
 
 # ---- image dataset annotations paths ---- #
 
-def get_image_annotations_dir_path():
+def get_image_annotations_dir_path() -> str:
     return os.path.join(get_image_dataset_dir_path(), "annotations/")
 
 
-def get_train_image_annotations_captions_file_path():
+def get_train_image_annotations_captions_file_path() -> str:
     return os.path.join(get_image_annotations_dir_path(), "captions_train2017.json")
 
 
-def get_val_image_annotations_captions_file_path():
+def get_val_image_annotations_captions_file_path() -> str:
     return os.path.join(get_image_annotations_dir_path(), "captions_val2017.json")
 
 
-def get_train_image_annotations_instances_file_path():
+def get_train_image_annotations_instances_file_path() -> str:
     return os.path.join(get_image_annotations_dir_path(), "instances_train2017.json")
 
 
-def get_val_image_annotations_instances_file_path():
+def get_val_image_annotations_instances_file_path() -> str:
     return os.path.join(get_image_annotations_dir_path(), "instances_val2017.json")
 
 
-def get_train_image_annotations_person_keypoints_file_path():
+def get_train_image_annotations_person_keypoints_file_path() -> str:
     return os.path.join(get_image_annotations_dir_path(), "person_keypoints_train2017.json")
 
 
-def get_val_image_annotations_person_keypoints_file_path():
+def get_val_image_annotations_person_keypoints_file_path() -> str:
     return os.path.join(get_image_annotations_dir_path(), "person_keypoints_val2017.json")
 
 
