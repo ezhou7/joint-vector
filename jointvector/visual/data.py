@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from pycocotools.coco import COCO
-from typing import Set, List, Tuple
+from typing import Set, List, Dict
 
 from jointvector.path import \
     get_train_image_annotations_instances_file_path, \
@@ -40,19 +40,27 @@ class CocoDataset:
         image_file_names = self.get_val_image_file_names()
         return [cv2.imread(get_val_image(image_file_name)) for image_file_name in image_file_names]
 
-    def get_train_instances(self) -> Tuple[List[np.array], List[List[dict]], List[int]]:
+    def get_train_instances(self) -> Dict[str: List[np.array], str: List[List[dict]], str: List[int]]:
         images = self.get_train_images()
         image_annotations = [self.train_split.imgToAnns[image_id] for image_id in self.train_split.imgs]
         image_category_labels = [image_annotation["category_id"] for image_annotation in image_annotations]
 
-        return images, image_annotations, image_category_labels
+        return {
+            "images": images,
+            "image_annotations": image_annotations,
+            "image_category_labels": image_category_labels
+        }
 
-    def get_val_instances(self):
+    def get_val_instances(self) -> Dict[str: List[np.array], str: List[List[dict]], str: List[int]]:
         images = self.get_val_images()
         image_annotations = [self.train_split.imgToAnns[image_id] for image_id in self.val_split.imgs]
         image_category_labels = [image_annotation["category_id"] for image_annotation in image_annotations]
 
-        return images, image_annotations, image_category_labels
+        return {
+            "images": images,
+            "image_annotations": image_annotations,
+            "image_category_labels": image_category_labels
+        }
 
 
 if __name__ == "__main__":
