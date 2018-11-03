@@ -21,6 +21,14 @@ class VisualBranch:
         )
         self.model = model_builder.build()
 
+    def get_penultimate_layer(self):
+        """
+        Uses a workaround b/c of Keras limitations.
+        Incorporates penultimate layer into model output so it is exposed for public use.
+        :return: tensor layer
+        """
+        return self.model.outputs[1]
+
     def train(self, trn_data, dev_data, nb_epochs=5, batch_size=32):
         for epoch in range(nb_epochs):
             # TODO: find out how to predict bounding boxes/annotations in an image

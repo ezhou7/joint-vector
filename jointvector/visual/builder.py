@@ -53,7 +53,11 @@ class VisualBranchBuilder:
         gap_layer = GlobalAveragePooling2D(data_format="channels_last")(dense_block_output)
         class_output_layer = Dense(units=1000, activation="softmax")(gap_layer)
 
-        return Model(inputs=[input_layer], outputs=[class_output_layer])
+        # include penultimate layer in outputs to expose for public use
+        # used to enable the model to be attached to other models
+        model = Model(inputs=[input_layer], outputs=[class_output_layer, gap_layer])
+        # TODO: compile model with optimizer, loss function and metrics
+        return model
 
     def add_dense_block(self, input_src, nb_channels, block_size):
         updated_input_src = input_src
@@ -87,7 +91,7 @@ class VisualBranchBuilder:
         return updated_input_src, updated_nb_channels
 
     def add_transition_block(self, input_src, nb_channels):
-        updated_nb_channels = self.compression_rate * nb_channels
+        updated_nb_channels = int(self.compression_rate * nb_channels)
 
         bottleneck_block_output = add_convolution_block(
             input_src=input_src,

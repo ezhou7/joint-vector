@@ -20,6 +20,7 @@ class EmbeddingSystemBuilder:
         self.tasks = tasks
 
     def build(self):
+        task_inputs = [task.get_task_input_neural_arch() for task in self.tasks]
         model_input, output_embedding_layer = self.__build_arch()
         task_outputs = [
             Dense(
@@ -29,7 +30,7 @@ class EmbeddingSystemBuilder:
             for task in self.tasks
         ]
 
-        models = [Model(inputs=model_input, outputs=task_output) for task_output in task_outputs]
+        models = [Model(inputs=task_inputs, outputs=task_output) for task_output in task_outputs]
 
         for task, model in zip(self.tasks, models):
             model.compile(optimizer=task.optimizer, loss=task.loss_func, metrics=task.metrics)
@@ -57,6 +58,7 @@ class EmbeddingSystemBuilder:
 
         # ----------- create layers ----------- #
 
+        # TODO: remove model_input b/c unnecessary since tasks provide their own neural architecture
         model_input = Input(shape=(self.words_window_size, self.embedding_dims))
         input_reshape = Reshape(target_shape=(self.words_window_size, self.embedding_dims, 1))
 

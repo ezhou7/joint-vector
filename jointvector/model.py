@@ -1,4 +1,3 @@
-import json
 import logging
 import numpy as np
 
@@ -6,6 +5,7 @@ from jointvector.builder import EmbeddingSystemBuilder
 from jointvector.data import generate_features
 from jointvector.path import get_task_props_file_path
 from jointvector.timer import stopwatch
+from jointvector.util import read_json_file
 
 
 class EmbeddingSystem:
@@ -13,8 +13,8 @@ class EmbeddingSystem:
         self.tasks = tasks
         self.word2vec = word2vec
 
-        with open(get_task_props_file_path("embedding-props.json"), "r") as fin:
-            embedding_sys_props = json.load(fin)
+        joint_model_props_path = get_task_props_file_path("embedding-props.json")
+        embedding_sys_props = read_json_file(joint_model_props_path)
 
         self.words_window_size = embedding_sys_props["words_window_size"]
         self.ngram_1_filters = embedding_sys_props["ngram_1_filters"]
@@ -49,8 +49,8 @@ class EmbeddingSystem:
             curr_dev_scores = [0.0] * len(self.tasks)
 
             for i, (task, model) in enumerate(zip(self.tasks, self.models)):
-                ytrn = task.generate_labels(trn_data)
-                ydev = task.generate_labels(dev_data)
+                ytrn = task.generate_label_indices_for_instances(trn_data)
+                ydev = task.generate_label_indices_for_instances(dev_data)
 
                 stopwatch.start("{}_training".format(task.task_name))
                 h = model.fit(x=xtrn, y=ytrn, validation_data=(xdev, ydev), batch_size=batch_size, epochs=1, verbose=0)

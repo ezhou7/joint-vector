@@ -1,16 +1,15 @@
 from setuptools import setup, find_packages
-import os
 
 
-NAME = "joint-vector"
+NAME = "jointvector"
 
 setup(
     name=NAME,
+    version="1.0.0",
     description="",
     license="MIT",
     packages=find_packages(exclude=["test"]) + ["props"],
     include_package_data=True,
-    setup_requires=["Cython"],
     extras_require={
         "tensorflow-gpu": ["tensorflow-gpu"]
     },
